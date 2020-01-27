@@ -1,0 +1,17 @@
+{
+  "name": "@eyevinn/function-scenes",
+  "version": "0.1.0",
+  "description": "Serverless Media Function to extract scene images from a video file",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jonas Rydholm Birmé",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "debug": "^4.1.1",
+    "restify": "^8.5.1",
+    "restify-errors": "^8.0.2",
+    "swagger-ui-restify": "^3.0.8"
+  }
+}
