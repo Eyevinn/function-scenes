@@ -84,6 +84,44 @@ server.get("/api/v1/:id/status", (req, res, next) => {
   }
 });
 
+server.put("/api/v1/:id/status", (req, res, next) => {
+  debug(`req.url=${req.url}`);
+  debug(`params.id=${req.params.id}`);
+  debug("req.body=%o", req.body);
+
+  if (req.body) {
+    try {
+      if (req.body.state === "cancel") {
+        const job = sceneDetect.getJob(req.params.id);
+        const newStatus = job.cancel();
+        res.send(200, newStatus);
+      } else {
+        throw new Error("Invalid state requested, expecting [cancel]");
+      }
+    } catch(errObj) {
+      debug("Error: %o", errObj);
+      const err = new errs.InternalServerError(errObj.message);
+      next(err);
+    }
+  } else {
+    next(new errs.InvalidContentError("Missing Request Body"));
+  }
+});
+
+server.del("/api/v1/:id", wrap (async (req, res, next) => {
+  debug(`req.url=${req.url}`);
+  debug(`params.id=${req.params.id}`);
+
+  try {
+    sceneDetect.deleteJob(req.params.id);
+    res.send(200, { message: 'Job deleted' });
+  } catch (errObj) {
+    debug("Error: %o", errObj);
+    const err = new errs.InternalServerError(errObj.message);
+    next(err);
+  }
+}));
+
 // Generated files
 server.get("/images/*", Restify.plugins.serveStaticFiles('/var/jobs/'));
 
