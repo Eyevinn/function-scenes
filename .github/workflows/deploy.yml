@@ -1,0 +1,26 @@
+name: Build and Deploy to Kubernetes cluster
+  
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+      - name: Checkout source
+        uses: actions/checkout@v1
+      - name: Build image and publish to registry
+        uses: mr-smithers-excellent/docker-build-push@v1.0
+        with:
+          image: function-scenes
+          registry: 590877988961.dkr.ecr.eu-north-1.amazonaws.com
+          tag: ${{ steps.get_version.outputs.VERSION }}
+          dockerfile: Dockerfile
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+        
