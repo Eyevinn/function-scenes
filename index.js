@@ -3,6 +3,7 @@ const errs = require("restify-errors");
 const SwaggerUI = require("swagger-ui-restify");
 
 const debug = require("debug")("function-scenes");
+const uuid = require("uuid-random");
 
 const SceneDetect = require("./lib/scene_detect.js");
 
@@ -15,6 +16,8 @@ const wrap = function(fn) {
 };
 
 const sceneDetect = new SceneDetect();
+
+const SERVER_ID = process.env.SERVER_ID || uuid();
 
 let server = Restify.createServer();
 server.use(Restify.plugins.queryParser());
@@ -43,7 +46,8 @@ server.post("/api/v1", wrap(async (req, res, next) => {
       res.send(200, {
         thumbnails: `/api/v1/${job.getJobId()}/thumbnails`,
         status: `/api/v1/${job.getJobId()}/status`
-      });
+      },
+      { headers: { 'x-server-id': SERVER_ID }});
       next();
     } catch (errObj) {
       debug("Error: %o", errObj);
@@ -62,7 +66,7 @@ server.get("/api/v1/:id/thumbnails", wrap(async (req, res, next) => {
   try {
     const job = sceneDetect.getJob(req.params.id);
     const thumbnails = await job.getDetectedThumbnails()
-    res.send(200, thumbnails);
+    res.send(200, thumbnails, { headers: { 'x-server-id': SERVER_ID }});
   } catch (errObj) {
     debug("Error: %o", errObj);
     const err = new errs.InternalServerError(errObj.message);
@@ -76,7 +80,7 @@ server.get("/api/v1/:id/status", (req, res, next) => {
 
   try {
     const job = sceneDetect.getJob(req.params.id);
-    res.send(200, job.getStatus());
+    res.send(200, job.getStatus(), { headers: { 'x-server-id': SERVER_ID }});
   } catch (errObj) {
     debug("Error: %o", errObj);
     const err = new errs.InternalServerError(errObj.message);
@@ -94,7 +98,7 @@ server.put("/api/v1/:id/status", (req, res, next) => {
       if (req.body.state === "cancel") {
         const job = sceneDetect.getJob(req.params.id);
         const newStatus = job.cancel();
-        res.send(200, newStatus);
+        res.send(200, newStatus, { headers: { 'x-server-id': SERVER_ID }});
       } else {
         throw new Error("Invalid state requested, expecting [cancel]");
       }
@@ -114,7 +118,7 @@ server.del("/api/v1/:id", wrap (async (req, res, next) => {
 
   try {
     sceneDetect.deleteJob(req.params.id);
-    res.send(200, { message: 'Job deleted' });
+    res.send(200, { message: 'Job deleted' }, { headers: { 'x-server-id': SERVER_ID }});
   } catch (errObj) {
     debug("Error: %o", errObj);
     const err = new errs.InternalServerError(errObj.message);
