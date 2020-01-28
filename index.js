@@ -18,6 +18,7 @@ const wrap = function(fn) {
 const sceneDetect = new SceneDetect();
 
 const SERVER_ID = process.env.SERVER_ID || uuid();
+const BASE_PATH = process.env.BASE_PATH || '';
 
 let server = Restify.createServer();
 server.use(Restify.plugins.queryParser());
@@ -42,10 +43,10 @@ server.post("/api/v1", wrap(async (req, res, next) => {
   if (req.body) {
     try {
       const mediaLocator = req.body.medialocator;
-      const job = await sceneDetect.createJob(mediaLocator);
+      const job = await sceneDetect.createJob(mediaLocator, { basePath: BASE_PATH });
       res.send(200, {
-        thumbnails: `/api/v1/${job.getJobId()}/thumbnails`,
-        status: `/api/v1/${job.getJobId()}/status`
+        thumbnails: `${BASE_PATH}/api/v1/${job.getJobId()}/thumbnails`,
+        status: `${BASE_PATH}/api/v1/${job.getJobId()}/status`
       },
       { 'x-server-id': SERVER_ID });
       next();
