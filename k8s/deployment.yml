@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: function-scenes-deployment
+  labels:
+    app: function-scenes
+spec:
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 50%
+  selector:
+    matchLabels:
+      app: function-scenes
+  template:
+    metadata:
+      labels:
+        app: function-scenes
+    spec:
+      containers:
+        - name: function-scenes
+          image: 590877988961.dkr.ecr.eu-north-1.amazonaws.com/function-scenes:v0.1.0
+          ports:
+            - containerPort: 3000
+              protocol: TCP
