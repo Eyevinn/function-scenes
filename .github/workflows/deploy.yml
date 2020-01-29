@@ -30,3 +30,4 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOY_AWS_SECRET_ACCESS_KEY }}
           REGION: eu-north-1
           CLUSTER: mediafunctions
+        args: set image deployment/function-scenes-deployment function-scenes=590877988961.dkr.ecr.eu-north-1.amazonaws.com/functino-scenes:${{ steps.get_version.outputs.VERSION }} --record
