@@ -23,4 +23,10 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
-        
+      - name: Deploy to K8s cluster
+        uses: Eyevinn/action-eks-kubectl@master
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOY_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOY_AWS_SECRET_ACCESS_KEY }}
+          REGION: eu-north-1
+          CLUSTER: mediafunctions
