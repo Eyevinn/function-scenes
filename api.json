@@ -1,1 +1,200 @@
-{}
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Eyevinn MediaFunction::Scenes",
+    "description": "A serverless media function to detect scene changes and extract keyframes in a video file or a stream",
+    "version": "0.1",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "servers": [
+    { "url": "http://functions.eyevinn.technology/scenes", "description": "Production" },
+    { "url": "/", "description": "Local Development" }
+  ],
+  "paths": {
+    "/api/v1": {
+      "post": {
+        "summary": "Start analyzing a video file or a stream",
+        "requestBody": {
+          "required": "true",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/model/request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/model/createJobResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/{id}": {
+      "delete": {
+        "summary": "Delete and clean up a job",
+        "parameters": {
+          "name": "id",
+          "in": "path",
+          "description": "Job ID",
+          "required": "true",
+          "schema": {
+            "type": "string"
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        } 
+      }
+    },
+    "/api/v1/{id}/thumbnails": {
+      "get": {
+        "summary": "Get URIs to extracted images",
+        "parameters": {
+          "name": "id",
+          "in": "path",
+          "description": "Job ID",
+          "required": "true",
+          "schema": {
+            "type": "string"
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/{id}/status": {
+      "get": {
+        "summary": "Get status of a job",
+        "parameters": {
+          "name": "id",
+          "in": "path",
+          "description": "Job ID",
+          "required": "true",
+          "schema": {
+            "type": "string"
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/model/job"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update state of a job",
+        "parameters": {
+          "name": "id",
+          "in": "path",
+          "description": "Job ID",
+          "required": "true",
+          "schema": {
+            "type": "string"
+          }
+        },
+        "requestBody": {
+          "required": "true",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/model/job"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/model/job"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "model": {
+    "request": {
+      "type": "object",
+      "required": [ "medialocator" ],
+      "properties": {
+        "medialocator": {
+          "type": "string",
+          "description": "URL to video file or video stream"
+        }
+      },
+      "example": {
+        "medialocator": "https://testcontent.eyevinn.technology/stswe19/Fraunhofer_updated_v2.mp4"
+      }
+    },
+    "createJobResponse": {
+      "type": "object",
+      "properties": {
+        "thumbnails": {
+          "type": "string",
+          "format": "uri",
+          "description": "Endpoint with links to generated images"
+        },
+        "status": {
+          "type": "string",
+          "format": "uri",
+          "description": "Endpoint for job status"
+        }
+      }
+    },
+    "job": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Job ID"
+        },
+        "state": {
+          "type": "string",
+          "description": "Job State",
+          "enum": [ "created" , "running", "completed", "failed", "cancelled" ]
+        }
+      }
+    }
+  }
+}
