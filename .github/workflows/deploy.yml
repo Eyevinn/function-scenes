@@ -31,4 +31,4 @@ jobs:
           REGION: eu-north-1
           CLUSTER: mediafunctions
         with:
-          args: set image deployment/function-scenes-deployment function-scenes=590877988961.dkr.ecr.eu-north-1.amazonaws.com/functino-scenes:${{ steps.get_version.outputs.VERSION }} --record
+          args: set image deployment/function-scenes-deployment function-scenes=590877988961.dkr.ecr.eu-north-1.amazonaws.com/function-scenes:${{ steps.get_version.outputs.VERSION }} --record
