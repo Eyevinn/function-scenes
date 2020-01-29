@@ -43,7 +43,7 @@
     "/api/v1/{id}": {
       "delete": {
         "summary": "Delete and clean up a job",
-        "parameters": {
+        "parameters": [{
           "name": "id",
           "in": "path",
           "description": "Job ID",
@@ -51,7 +51,7 @@
           "schema": {
             "type": "string"
           }
-        },
+        }],
         "responses": {
           "200": {
             "content": {
@@ -71,7 +71,7 @@
     "/api/v1/{id}/thumbnails": {
       "get": {
         "summary": "Get URIs to extracted images",
-        "parameters": {
+        "parameters": [{
           "name": "id",
           "in": "path",
           "description": "Job ID",
@@ -79,7 +79,7 @@
           "schema": {
             "type": "string"
           }
-        },
+        }],
         "responses": {
           "200": {
             "content": {
@@ -97,7 +97,7 @@
     "/api/v1/{id}/status": {
       "get": {
         "summary": "Get status of a job",
-        "parameters": {
+        "parameters": [{
           "name": "id",
           "in": "path",
           "description": "Job ID",
@@ -105,7 +105,7 @@
           "schema": {
             "type": "string"
           }
-        },
+        }],
         "responses": {
           "200": {
             "content": {
@@ -120,7 +120,7 @@
       },
       "put": {
         "summary": "Update state of a job",
-        "parameters": {
+        "parameters": [{
           "name": "id",
           "in": "path",
           "description": "Job ID",
@@ -128,7 +128,7 @@
           "schema": {
             "type": "string"
           }
-        },
+        }],
         "requestBody": {
           "required": "true",
           "content": {

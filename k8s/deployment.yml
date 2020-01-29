@@ -19,7 +19,10 @@ spec:
     spec:
       containers:
         - name: function-scenes
-          image: 590877988961.dkr.ecr.eu-north-1.amazonaws.com/function-scenes:v0.1.0
+          image: 590877988961.dkr.ecr.eu-north-1.amazonaws.com/function-scenes:v0.1.1
+          env:
+            - name: BASE_PATH
+              value: "/scenes"
           ports:
             - containerPort: 3000
               protocol: TCP
