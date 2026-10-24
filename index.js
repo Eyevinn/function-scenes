@@ -27,7 +27,12 @@ server.use(Restify.plugins.bodyParser());
 // API Documentation
 const apiDocument = require("./api.json");
 server.get("/api/docs/*", ...SwaggerUI.serve);
-server.get("/api/docs/", SwaggerUI.setup(apiDocument));
+// swagger-ui-restify returns a (req, res) handler that is not async, which restify 12 rejects
+const swaggerSetup = SwaggerUI.setup(apiDocument);
+server.get("/api/docs/", (req, res, next) => {
+  swaggerSetup(req, res);
+  next();
+});
 
 // Healthcheck endpoint
 server.get("/", (req, res, next) => {

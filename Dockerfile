@@ -1,11 +1,11 @@
-FROM eyevinntechnology/ffmpeg-base:0.2.2
-MAINTAINER Eyevinn Technology <info@eyevinn.se>
+FROM node:24-slim
+LABEL maintainer="Eyevinn Technology <info@eyevinn.se>"
 
-RUN apt-get update
-RUN apt-get install -y --force-yes curl
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
-RUN apt-get install -y --force-yes nodejs
-RUN apt-get install -y --force-yes fonts-freefont-ttf
+# Node 24 needs a newer glibc than the old Ubuntu 18.04 eyevinntechnology/ffmpeg-base,
+# so Node comes from the official image and ffmpeg/fonts from distro packages.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ffmpeg fonts-freefont-ttf && \
+    rm -rf /var/lib/apt/lists/*
 
 ADD . /app
 WORKDIR /app
